@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -11,7 +12,8 @@ import java.util.Optional;
 public class SampleController {
 
     @GetMapping("/")
-    public String index(Model model, Principal principal) {
+    public String index(Model model, Principal principal, HttpSession session) {
+        System.out.println(session.getClass());
         Optional.ofNullable(principal)
             .ifPresentOrElse(p -> model.addAttribute("message", "Hello, " + p.getName()),
                 () -> model.addAttribute("message", "Hello Spring Security"));
