@@ -12,8 +12,7 @@ import java.util.Optional;
 public class SampleController {
 
     @GetMapping("/")
-    public String index(Model model, Principal principal, HttpSession session) {
-        System.out.println(session.getClass());
+    public String index(Model model, Principal principal) {
         Optional.ofNullable(principal)
             .ifPresentOrElse(p -> model.addAttribute("message", "Hello, " + p.getName()),
                 () -> model.addAttribute("message", "Hello Spring Security"));
