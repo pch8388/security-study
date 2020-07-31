@@ -1,9 +1,11 @@
 package me.study.securitystudy.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
@@ -20,6 +22,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         handler.setRoleHierarchy(roleHierarchy);
 
         return handler;
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        // static 요청에 대해 검사하지 않음
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        // h2 콘솔 제외
+        web.ignoring().requestMatchers(PathRequest.toH2Console());
     }
 
     @Override
