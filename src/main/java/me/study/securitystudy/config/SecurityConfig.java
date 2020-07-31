@@ -28,8 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         // static 요청에 대해 검사하지 않음
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-        // h2 콘솔 제외
-        web.ignoring().requestMatchers(PathRequest.toH2Console());
     }
 
     @Override
