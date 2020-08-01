@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 특정 요청에 대해 설정
         // 인가
         http.authorizeRequests()
-                .mvcMatchers("/", "/info", "/account/**").permitAll()  // 인증없이 접근 가능
+                .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()  // 인증없이 접근 가능
                 .mvcMatchers("/admin").hasRole("ADMIN")  // role 에 따라 구분
                 .mvcMatchers("/user").hasRole("USER")  // role 에 따라 구분
                 .anyRequest().authenticated()   // 기타 요청은 인증을 하기만 하면 됨
