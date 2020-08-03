@@ -49,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .logoutUrl("/logout")  // logout url 설정 => 커스텀한 페이지를 설정하고 싶을 때
             .logoutSuccessUrl("/");  // logout 성공시 이동할 url
 
-        // 자동으로 만들어주는 폼의 username, password 를 받아올 이름을 정할 수 있다
+        // 커스텀 로그인 페이지
         http.formLogin()
-            .usernameParameter("my-username")
-            .passwordParameter("my-password");
+            .loginPage("/login")   // get 요청은 로그인 폼 페이지를 보여주고, post 요청은 UsernamePasswordAuthenticationFilter 에서 검증
+            .permitAll();
 
         // 시큐리티 홀더의 공유 전략 설정 - 쓰레드가 생성하는 하위 쓰레드까지 자원공유
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
