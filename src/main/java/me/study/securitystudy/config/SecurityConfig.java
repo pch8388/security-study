@@ -54,6 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .loginPage("/login")   // get 요청은 로그인 폼 페이지를 보여주고, post 요청은 UsernamePasswordAuthenticationFilter 에서 검증
             .permitAll();
 
+        http.sessionManagement()
+            .maximumSessions(1)  // 같은 계정으로 동시 로그인 최대 개수
+                .maxSessionsPreventsLogin(false); // 동시 접속이 생기면 기존의 세션을 false : 만료시킴, true : 새로운 접속 불가
+
+
         // 시큐리티 홀더의 공유 전략 설정 - 쓰레드가 생성하는 하위 쓰레드까지 자원공유
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
