@@ -2,6 +2,7 @@ package me.study.securitystudy.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +10,14 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -58,6 +66,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .maximumSessions(1)  // 같은 계정으로 동시 로그인 최대 개수
                 .maxSessionsPreventsLogin(false); // 동시 접속이 생기면 기존의 세션을 false : 만료시킴, true : 새로운 접속 불가
 
+        http.exceptionHandling()
+            .accessDeniedHandler((request, response, accessDeniedException) -> {
+                UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                String username = principal.getUsername();
+                System.out.println(username + " is denied to access " + request.getRequestURI());
+                response.sendRedirect("/access-denied");
+            }); // 핸들러를 구현하여 인가 실패에 대한 처리
 
         // 시큐리티 홀더의 공유 전략 설정 - 쓰레드가 생성하는 하위 쓰레드까지 자원공유
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
