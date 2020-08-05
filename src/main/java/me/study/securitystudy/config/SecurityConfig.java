@@ -1,5 +1,7 @@
 package me.study.securitystudy.config;
 
+import lombok.RequiredArgsConstructor;
+import me.study.securitystudy.account.AccountService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,7 +23,10 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final AccountService accountService;
 
     public SecurityExpressionHandler expressionHandler() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
@@ -73,6 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 System.out.println(username + " is denied to access " + request.getRequestURI());
                 response.sendRedirect("/access-denied");
             }); // 핸들러를 구현하여 인가 실패에 대한 처리
+
+        http.rememberMe()
+            .userDetailsService(accountService)
+            .key("remember-me-sample");
 
         // 시큐리티 홀더의 공유 전략 설정 - 쓰레드가 생성하는 하위 쓰레드까지 자원공유
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
