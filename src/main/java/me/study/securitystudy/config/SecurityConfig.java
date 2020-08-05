@@ -2,6 +2,7 @@ package me.study.securitystudy.config;
 
 import lombok.RequiredArgsConstructor;
 import me.study.securitystudy.account.AccountService;
+import me.study.securitystudy.common.LoggingFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // 특정 필터의 앞쪽에 넣음
+        http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
+
         // 특정 요청에 대해 설정
         // 인가
         http.authorizeRequests()
@@ -79,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.sendRedirect("/access-denied");
             }); // 핸들러를 구현하여 인가 실패에 대한 처리
 
+        // remember me 설정
         http.rememberMe()
             .userDetailsService(accountService)
             .key("remember-me-sample");
