@@ -5,10 +5,11 @@ import me.study.securitystudy.account.Account;
 import me.study.securitystudy.account.AccountContext;
 import me.study.securitystudy.account.AccountRepository;
 import me.study.securitystudy.account.UserAccount;
+import me.study.securitystudy.book.BookRepository;
 import me.study.securitystudy.common.CurrentUser;
 import me.study.securitystudy.common.SecurityLogger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,8 @@ public class SampleController {
 
     private final SampleService sampleService;
     private final AccountRepository accountRepository;
+    private final BookRepository bookRepository;
+    private final ApplicationContext context;
 
     @GetMapping("/")
     public String index(Model model, @AuthenticationPrincipal UserAccount userAccount) {
@@ -59,6 +62,7 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal) {
         model.addAttribute("message", "Hello User, " + principal.getName());
+        model.addAttribute("books", bookRepository.findCurrentUserBooks());
         return "user";
     }
 
